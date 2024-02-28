@@ -39,12 +39,12 @@ class Square:
         for i in range(self.size):
             row = []
             for j in range(self.size):
-                row.append(self.satisfacion_agent(i,j))
+                row.append(self.get_agent_satisfaction(i,j))
             mat.append(row)
         self.satisfaction_df = pd.DataFrame(mat)
 
 
-    def satisfacion_agent(self, i, j):
+    def get_agent_satisfaction(self, i, j):
         agent = self.df.iloc[i,j]
         if agent == 0:
             return 0
@@ -63,7 +63,7 @@ class Square:
     def is_square_satisfied(self):
         return not (self.satisfaction_df == -1).any().any()
     
-    def satisfy(self):
+    def free_move(self):
         while not self.is_square_satisfied():
             for i in range(self.size):
                 for j in range(self.size):
@@ -76,6 +76,10 @@ class Square:
 
             # updating satisfaction dataframe
             self.update_satisfaction_df()
+    
+    
+    def restricting_move(self, neighbors):
+        pass
 
 
     def show_matrix(self):
@@ -91,6 +95,6 @@ s = Square(10)
 print(s.df)
 print(s.satisfaction_df)
 print(s.is_square_satisfied())
-s.satisfy()
+s.free_move()
 print(f"{s.simulation =} {s.is_square_satisfied() =}")
 s.show_matrix()
