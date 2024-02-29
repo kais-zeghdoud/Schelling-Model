@@ -2,18 +2,19 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.colors import LinearSegmentedColormap
-
+from PIL import Image
 
 class Square:
 
     simulation = 0
-    threshold = 2
+    threshold = int(0.51*8)
     
     def __init__(self, size):
         self.size = size
         self.agents = size**2
         self.P = int(0.45 * self.agents)
         self.N = int(0.45 * self.agents)
+        self.energy = []
 
         # création d'une matrice carrée de zéros de taille size*size
         tab = np.zeros((size, size), dtype=int)
@@ -30,9 +31,19 @@ class Square:
         # création du dataframe
         self.df = pd.DataFrame(tab)
 
+        # création du dataframe étendu
+        self.df_extended = self.get_extended_df()
+
         # création de la matrice de statisfaction
         self.update_satisfaction_df()
 
+    def get_extended_df(self):
+        high = pd.Series([self.df.iloc[self.size-1].tolist()[-1]] + self.df.iloc[self.size-1].tolist() + [self.df.iloc[self.size-1].tolist()[0]])
+        low = pd.Series([self.df.iloc[0].tolist()[-1]] + self.df.iloc[0].tolist() + [self.df.iloc[0].tolist()[0]])
+        left = self.df[len(self.df)-1]
+        right = self.df[0]
+        middle = pd.DataFrame([(left[i], *self.df.iloc[i].tolist(), right[i]) for i in range(self.size)])
+        return pd.DataFrame([high, *middle.values, low])
 
     def update_satisfaction_df(self):
         mat = []
@@ -90,11 +101,25 @@ class Square:
         plt.show()
 
 
+    def compute_energy(self):
+        energy = 0
+        for i in range(self.size):
+            for j in range(self.size):
+                energy += self.df.iloc[i,j] 
+        return - energy
 
-s = Square(10)
+
+    def plot_dynamic(self):
+        pass
+
+
+
+s = Square(3)
 print(s.df)
+print(s.df_extended)
 print(s.satisfaction_df)
 print(s.is_square_satisfied())
+s.show_matrix()
 s.free_move()
 print(f"{s.simulation =} {s.is_square_satisfied() =}")
 s.show_matrix()
