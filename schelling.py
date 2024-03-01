@@ -63,8 +63,8 @@ class Square:
             neighbors = 0
             for x in range(i-1, i+2):
                 for y in range(j-1, j+2):
-                    if (x,y) != (i,j) and 0<=x<len(self.df) and 0<=y<len(self.df):
-                        if self.df.iloc[x,y] == agent:
+                    if (x,y) != (i,j):
+                        if self.extended_df.iloc[x+1,y+1] == agent:
                             neighbors += 1
             if neighbors >= self.threshold:
                 return 1
@@ -81,52 +81,57 @@ class Square:
                     if self.satisfaction_df.iloc[i,j] == -1:
                         zero_idx = np.argwhere(self.df.values == 0) # récupération des indices des cases (i,j)=0
                         x,y = zero_idx[np.random.choice(len(zero_idx))] # selection aléatoire d'une case vide
-                        self.df.iloc[x,y] = -1 # déplacement de l'agent insatisfait dans une case vide
+                        self.df.iloc[x,y] = self.df.iloc[i,j] # déplacement de l'agent insatisfait dans une case vide
                         self.df.iloc[i,j] = 0 # déplacement de la case vide à l'emplacement de l'agent insatisfait
+                        # maj des DF
+                        self.update_extended_df()
+                        self.update_satisfaction_df()
+            
+            # new iteration done
             self.simulation += 1
-
-            # updating dataframes
-            self.update_extended_df()
-            self.update_satisfaction_df()
+            self.energy.append(self.compute_energy())
     
     
     def restricting_move(self, neighbors):
         pass
 
 
-    def show_matrix(self):
-        # création d'une colormap personnalisée : Rouge, Blanc, Bleu
-        custom_cmap = LinearSegmentedColormap.from_list('custom_map', [(1, 0, 0), (1, 1, 1), (0, 0, 1)], N=3)
-        plt.imshow(self.df, cmap=custom_cmap, interpolation='nearest')
-        plt.title("2D Square Network")
-        plt.show()
-
-
-    def compute_energy(self):
+    def compute_energy(self)->int:
         energy = 0
         for i in range(self.size):
             for j in range(self.size):
                 energy += self.df.iloc[i,j] * sum(self.get_neighbors_sum(i,j))
         return - energy
     
+
     def get_neighbors_sum(self, i:int, j:int):
         for x in range(i-1,i+2):
             for y in range(j-1,j+2):
                 if (x,y) != (i,j):
                     yield self.extended_df.iloc[x,y]
 
+    def show_matrix(self):
+        # création d'une colormap personnalisée : Rouge, Blanc, Bleu
+        custom_cmap = LinearSegmentedColormap.from_list('custom_map', [(1, 0, 0), (1, 1, 1), (0, 0, 1)], N=3)
+        plt.imshow(self.df, cmap=custom_cmap, interpolation='nearest')
+        plt.title("2D Square Network")
+        plt.xticks([])
+        plt.yticks([])
+        plt.show()
+    
 
     def plot_dynamic(self):
-        pass
+        plt.plot(self.energy)
+        plt.title(f"Energy Dynamic for 2D Square Network (n={self.size})")
+        plt.xlabel("Iteration i")
+        plt.ylabel("E(i)")
+        plt.show()
 
 
 
-s = Square(3)
-print(s.df)
-print(s.df_extended)
-print(s.satisfaction_df)
-print(s.is_square_satisfied())
+s = Square(20)
 s.show_matrix()
 s.free_move()
-print(f"{s.simulation =} {s.is_square_satisfied() =}")
+print(f"{s.simulation =} {s.is_square_satisfied() =} {s.energy =}")
 s.show_matrix()
+s.plot_dynamic()
