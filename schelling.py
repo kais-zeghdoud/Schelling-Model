@@ -32,18 +32,18 @@ class Square:
         self.df = pd.DataFrame(tab)
 
         # création du dataframe étendu
-        self.df_extended = self.get_extended_df()
+        self.update_extended_df()
 
         # création de la matrice de statisfaction
         self.update_satisfaction_df()
 
-    def get_extended_df(self):
+    def update_extended_df(self):
         high = pd.Series([self.df.iloc[self.size-1].tolist()[-1]] + self.df.iloc[self.size-1].tolist() + [self.df.iloc[self.size-1].tolist()[0]])
         low = pd.Series([self.df.iloc[0].tolist()[-1]] + self.df.iloc[0].tolist() + [self.df.iloc[0].tolist()[0]])
         left = self.df[len(self.df)-1]
         right = self.df[0]
         middle = pd.DataFrame([(left[i], *self.df.iloc[i].tolist(), right[i]) for i in range(self.size)])
-        return pd.DataFrame([high, *middle.values, low])
+        self.extended_df = pd.DataFrame([high, *middle.values, low])
 
     def update_satisfaction_df(self):
         mat = []
@@ -85,7 +85,8 @@ class Square:
                         self.df.iloc[i,j] = 0 # déplacement de la case vide à l'emplacement de l'agent insatisfait
             self.simulation += 1
 
-            # updating satisfaction dataframe
+            # updating dataframes
+            self.update_extended_df()
             self.update_satisfaction_df()
     
     
@@ -105,8 +106,14 @@ class Square:
         energy = 0
         for i in range(self.size):
             for j in range(self.size):
-                energy += self.df.iloc[i,j] 
+                energy += self.df.iloc[i,j] * sum(self.get_neighbors_sum(i,j))
         return - energy
+    
+    def get_neighbors_sum(self, i:int, j:int):
+        for x in range(i-1,i+2):
+            for y in range(j-1,j+2):
+                if (x,y) != (i,j):
+                    yield self.extended_df.iloc[x,y]
 
 
     def plot_dynamic(self):
