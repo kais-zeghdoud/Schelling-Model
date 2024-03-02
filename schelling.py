@@ -30,6 +30,7 @@ class Square:
         
         # création du dataframe
         self.df = pd.DataFrame(tab)
+        self.INITIAL_DF = self.df.copy(deep=True)
 
         # création du dataframe étendu
         self.update_extended_df()
@@ -71,7 +72,13 @@ class Square:
                             agents +=1
                         if self.extended_df.iloc[x+1,y+1] == agent:
                             neighbors += 1
-            if neighbors/agents >= self.threshold:
+            # récupération du pourcentage d'agents voisins similaires
+            try:
+                ratio = neighbors/agents
+            except ZeroDivisionError:
+                ratio = 0
+            # détermination de la satisfaction de l'agent (i,j)
+            if ratio >= self.threshold:
                 return 1
             else: 
                 return -1
@@ -116,27 +123,34 @@ class Square:
                     yield self.extended_df.iloc[x,y]
 
     def show_matrix(self):
+        fig, axs = plt.subplots(1,2)
         # création d'une colormap personnalisée : Rouge, Blanc, Bleu
         custom_cmap = LinearSegmentedColormap.from_list('custom_map', [(1, 0, 0), (1, 1, 1), (0, 0, 1)], N=3)
-        plt.imshow(self.df, cmap=custom_cmap, interpolation='nearest')
-        plt.title("2D Square Network")
-        plt.xticks([])
-        plt.yticks([])
+
+        axs[0].imshow(self.INITIAL_DF, cmap=custom_cmap, interpolation='nearest')
+        axs[0].set_title(f"2D Square Network at iteration 0")
+        axs[0].set_xticks([])
+        axs[0].set_yticks([])
+
+        axs[1].imshow(self.df, cmap=custom_cmap, interpolation='nearest')
+        axs[1].set_title(f"2D Square Network at iteration {self.simulation}")
+        axs[1].set_xticks([])
+        axs[1].set_yticks([])
+
         plt.show()
     
 
     def plot_dynamic(self):
         plt.plot(self.energy)
         plt.title(f"Energy Dynamic for 2D Square Network (n={self.size})")
-        plt.xlabel("Iteration i")
+        plt.xlabel("Iteration")
         plt.ylabel("E(i)")
         plt.show()
 
 
 
 s = Square(20)
-s.show_matrix()
 s.free_move()
-print(f"{s.simulation =} {s.is_square_satisfied() =} {s.energy =}")
 s.show_matrix()
+print(f"{s.simulation =} {s.is_square_satisfied() =} {s.energy =}")
 s.plot_dynamic()

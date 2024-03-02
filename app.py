@@ -1,6 +1,6 @@
 from schelling import Square
 from functions import *
-
+import matplotlib.pyplot as plt
 
 choice = 0
 menu = "-----------MAIN MENU-----------\n\
@@ -10,8 +10,8 @@ menu = "-----------MAIN MENU-----------\n\
         4: Quit the application\n"
 
 menu1 = "-----------2D Square Network-----------\n\
-        1: Plot single dynamic E(i)\n\
-        2: Plot for 100 dynamics <E>(i)\n\
+        1: Plot single dynamic E(i) for n=20 and q=51%\n\
+        2: Plot for 100 dynamics <E>(i) for 100 different dynamics (n=20 and q=51%)\n\
         3: Plot <E∞>(n) with n ∈ [10,100]\n\
         4:\n\
         5:\n"
@@ -32,11 +32,17 @@ while choice != 3:
             choice1 = get_choice(menu1, 4, True)
             match choice1:
                 case 1:
-                    pass
+                    s = Square(20)
+                    s.free_move()
+                    s.show_matrix()
+                    s.plot_dynamic()
+
                 case 2:
                     pass
+
                 case 3:
                     pass
+
                 case 4:
                     pass
 
