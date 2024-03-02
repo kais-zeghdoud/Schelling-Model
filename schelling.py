@@ -7,7 +7,7 @@ from PIL import Image
 class Square:
 
     simulation = 0
-    threshold = int(0.51*8)
+    threshold = 0.51
     
     def __init__(self, size):
         self.size = size
@@ -37,6 +37,7 @@ class Square:
         # création de la matrice de statisfaction
         self.update_satisfaction_df()
 
+
     def update_extended_df(self):
         high = pd.Series([self.df.iloc[self.size-1].tolist()[-1]] + self.df.iloc[self.size-1].tolist() + [self.df.iloc[self.size-1].tolist()[0]])
         low = pd.Series([self.df.iloc[0].tolist()[-1]] + self.df.iloc[0].tolist() + [self.df.iloc[0].tolist()[0]])
@@ -44,6 +45,7 @@ class Square:
         right = self.df[0]
         middle = pd.DataFrame([(left[i], *self.df.iloc[i].tolist(), right[i]) for i in range(self.size)])
         self.extended_df = pd.DataFrame([high, *middle.values, low])
+
 
     def update_satisfaction_df(self):
         mat = []
@@ -56,6 +58,7 @@ class Square:
 
 
     def get_agent_satisfaction(self, i, j):
+        agents = 0 # neighbors that are not empty cases
         agent = self.df.iloc[i,j]
         if agent == 0:
             return 0
@@ -64,9 +67,11 @@ class Square:
             for x in range(i-1, i+2):
                 for y in range(j-1, j+2):
                     if (x,y) != (i,j):
+                        if self.extended_df.iloc[x+1,y+1] != 0:
+                            agents +=1
                         if self.extended_df.iloc[x+1,y+1] == agent:
                             neighbors += 1
-            if neighbors >= self.threshold:
+            if neighbors/agents >= self.threshold:
                 return 1
             else: 
                 return -1
