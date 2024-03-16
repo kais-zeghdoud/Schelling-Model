@@ -102,10 +102,12 @@ class Square:
             self.energy.append(self.compute_energy())
 
     def restricting_move(self):
+        print("Restricting move")
         # Parcourir tous les agents de la matrice si il y a des agents insatisfaits
         while not self.is_square_satisfied():
             for i in range(self.size):
                 for j in range(self.size):
+                    print("1 = " + str(i) + "; j = " + str(j))
                     if self.satisfaction_df.iloc[i, j] == -1:
                         # Récupération des indices des 8 voisins les plus proches
                         neighbors_indices = [(i + x, j + y) for x in range(-1, 2) for y in range(-1, 2) if
@@ -117,7 +119,7 @@ class Square:
                         # Recherche d'un voisin non occupé
                         found = False
                         for x, y in neighbors_indices:
-                            if self.size > x >= 0 == self.df.iloc[x, y] and 0 <= y < self.size:
+                            if 0 <= x < self.size and 0 <= y < self.size and self.df.iloc[x, y] == 0:
                                 found = True
                                 # Déplacer l'agent insatisfait
                                 self.df.iloc[x, y] = self.df.iloc[i, j]
