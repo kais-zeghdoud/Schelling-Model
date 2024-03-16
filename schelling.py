@@ -3,7 +3,14 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.colors import LinearSegmentedColormap
 from PIL import Image
+import time
 
+def calculate_execution_time(func, *args, **kwargs):
+    start_time = time.time()
+    func(*args, **kwargs)
+    end_time = time.time()
+    execution_time = end_time - start_time
+    print(f"Temps d'exécution de {func.__name__}: {execution_time} secondes")
 
 class Square:
     simulation = 0
@@ -102,19 +109,25 @@ class Square:
             self.simulation += 1
             self.energy.append(self.compute_energy())
 
-    def restricting_move(self):
+    def restricting_move(self, nbr_neighbors):
         print("Restricting move")
         # Parcourir tous les agents de la matrice si il y a des agents insatisfaits
         while not self.is_square_satisfied():
             for i in range(self.size):
                 for j in range(self.size):
-                    print("1 = " + str(i) + "; j = " + str(j))
+                    # print("1 = " + str(i) + "; j = " + str(j))
                     if self.satisfaction_df.iloc[i, j] == -1:
                         # Récupération des indices des 8 voisins les plus proches
-                        neighbors_indices = [(i + x, j + y) for x in range(-1, 2) for y in range(-1, 2) if
-                                             (x != 0 or y != 0)]
+                        if nbr_neighbors == 8:
+                            neighbors_indices =[(i + x, j + y) for x in range(-1, 2) for y in range(-1, 2) if
+                                                (x != 0 or y != 0)]
+                        elif nbr_neighbors == 24:
+                            neighbors_indices = [(i + x, j + y) for x in range(-2, 3) for y in range(-2, 3) if
+                                                 (x != 0 or y != 0)]
+                        else:
+                            return;
 
-                        # Mélangez les indices pour choisir aléatoirement la destination potentielle  de l'agent insatisfait.
+                        # Mélange des indices pour choisir aléatoirement la destination potentielle  de l'agent insatisfait.
                         np.random.shuffle(neighbors_indices)
 
                         # Recherche d'un voisin non occupé
@@ -177,9 +190,9 @@ class Square:
         plt.show()
 
 
-# s = Square(5)
+s = Square(20)
 # s.free_move()
-# #s.restricting_move()
-# s.show_matrix()
-# print(f"{s.simulation =} {s.is_square_satisfied() =} {s.energy =}")
-# s.plot_dynamic()
+calculate_execution_time(s.restricting_move())
+s.show_matrix()
+print(f"{s.simulation =} {s.is_square_satisfied() =} {s.energy =}")
+s.plot_dynamic()
