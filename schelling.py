@@ -3,14 +3,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.colors import LinearSegmentedColormap
 from PIL import Image
-import time
+import functions
 
-def calculate_execution_time(func, *args, **kwargs):
-    start_time = time.time()
-    func(*args, **kwargs)
-    end_time = time.time()
-    execution_time = end_time - start_time
-    print(f"Temps d'exécution de {func.__name__}: {execution_time} secondes")
 
 class Square:
     simulation = 0
@@ -124,8 +118,6 @@ class Square:
                         elif nbr_neighbors == 24:
                             neighbors_indices = [(i + x, j + y) for x in range(-2, 3) for y in range(-2, 3) if
                                                  (x != 0 or y != 0)]
-                        else:
-                            return;
 
                         # Mélange des indices pour choisir aléatoirement la destination potentielle  de l'agent insatisfait.
                         np.random.shuffle(neighbors_indices)
@@ -192,7 +184,7 @@ class Square:
 
 s = Square(20)
 # s.free_move()
-calculate_execution_time(s.restricting_move(8))
+functions.calculate_execution_time(s.restricting_move(8))
 s.show_matrix()
 print(f"{s.simulation =} {s.is_square_satisfied() =} {s.energy =}")
 s.plot_dynamic()

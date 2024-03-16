@@ -60,7 +60,7 @@ while choice != 3:
 
                 case 4:
                     s = Square(20)
-                    s.restricting_move() # SPECIFY 8 NEIGHBORS
+                    s.restricting_move(8) # 8 nearest neighbors
                     s.show_matrix()
                     s.plot_dynamic()
                     
@@ -68,7 +68,7 @@ while choice != 3:
                     dynamics = []
                     for i in range(100):
                         s = Square(20)
-                        s.restricting_move()  # SPECIFY 8 NEIGHBORS
+                        s.restricting_move(8)  # 8 nearest neighbors
                         dynamics.append(s.energy)
                     average = get_dynamics_average(np.array(dynamics))
                     get_plot(average)
@@ -77,14 +77,14 @@ while choice != 3:
                     energies = []
                     for n in range(10, 101): # n ∈ [10,100]
                         s = Square(n)
-                        s.restricting_move() # SPECIFY 8 NEIGHBORS
+                        s.restricting_move(8) # 8 nearest neighbors
                         energies.append(s.energy[-1]) # getting the E∞ value after convergence of the algorithm
                         print(f"Square with size {n} done: {s.energy[-1]=}")
                     get_plot(energies, "E∞(n) value after algorithm convergence for Squares with n ∈ [10,100]", "Square Size n", "E∞", [n for n in range(10,101)])
 
                 case 7:
                     s = Square(20)
-                    s.restricting_move() # SPECIFY 24 NEIGHBORS
+                    s.restricting_move(24) # 24 nearest neighbors
                     s.show_matrix()
                     s.plot_dynamic()
                     
@@ -92,7 +92,7 @@ while choice != 3:
                     dynamics = []
                     for i in range(100):
                         s = Square(20)
-                        s.restricting_move() # SPECIFY 24 NEIGHBORS
+                        s.restricting_move(24) # 24 nearest neighbors
                         dynamics.append(s.energy)
                     average = get_dynamics_average(np.array(dynamics))
                     get_plot(average)
@@ -101,7 +101,7 @@ while choice != 3:
                     energies = []
                     for n in range(10, 101): # n ∈ [10,100]
                         s = Square(n)
-                        s.restricting_move() # SPECIFY 24 NEIGHBORS
+                        s.restricting_move(24) # 24 nearest neighbors
                         energies.append(s.energy[-1]) # getting the E∞ value after convergence of the algorithm
                         print(f"Square with size {n} done: {s.energy[-1]=}")
                     get_plot(energies, "E∞(n) value after algorithm convergence for Squares with n ∈ [10,100]", "Square Size n", "E∞", [n for n in range(10,101)])

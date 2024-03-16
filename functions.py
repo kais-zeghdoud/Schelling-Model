@@ -1,4 +1,4 @@
-import os, matplotlib.pyplot as plt, numpy as np
+import os, time, matplotlib.pyplot as plt, numpy as np
 cls = lambda: os.system('cls')
 
 
@@ -26,3 +26,11 @@ def get_plot(tab:list, title:str, x:str, y:str, xticks=False):
     plt.xlabel(x)
     plt.ylabel(y)
     plt.show()
+
+
+def calculate_execution_time(func, *args, **kwargs):
+    start_time = time.time()
+    func(*args, **kwargs)
+    end_time = time.time()
+    execution_time = end_time - start_time
+    print(f"Temps d'exécution de {func.__name__}: {execution_time} secondes")
