@@ -97,7 +97,6 @@ class Square:
                         # maj des DF
                         self.update_extended_df()
                         self.update_satisfaction_df()
-                print(s.satisfaction_df)
 
             # new iteration done
             self.simulation += 1
@@ -179,9 +178,9 @@ class Square:
         plt.show()
 
 
-s = Square(5)
-s.free_move()
-#s.restricting_move()
-s.show_matrix()
-print(f"{s.simulation =} {s.is_square_satisfied() =} {s.energy =}")
-s.plot_dynamic()
+# s = Square(5)
+# s.free_move()
+# #s.restricting_move()
+# s.show_matrix()
+# print(f"{s.simulation =} {s.is_square_satisfied() =} {s.energy =}")
+# s.plot_dynamic()

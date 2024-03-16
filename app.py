@@ -20,8 +20,8 @@ menu2 = "-----------Any Network-----------"
 
 
 cls()
-while choice != 3:
-    choice = get_choice(menu, 3)
+while choice != 4:
+    choice = get_choice(menu, 4)
     match choice:
         case 1:
             threshold = 0
@@ -38,7 +38,13 @@ while choice != 3:
                     s.plot_dynamic()
 
                 case 2:
-                    pass
+                    dynamics = []
+                    for i in range(100):
+                        s = Square(20)
+                        s.free_move()
+                        dynamics.append(s.energy)
+                    average = get_dynamics_average(dynamics)
+                    plot_average(average)
 
                 case 3:
                     pass
