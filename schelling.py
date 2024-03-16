@@ -134,7 +134,6 @@ class Square:
                         # Mise à jour
                         self.update_extended_df()
                         self.update_satisfaction_df()
-                print(s.satisfaction_df)
 
             # Nouvelle itération
             self.simulation += 1
