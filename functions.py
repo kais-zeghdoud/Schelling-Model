@@ -12,13 +12,17 @@ def get_choice(menu:str, limit:int, clear=False)->int:
     return choice
 
 
-def get_dynamics_average(arr:np.ndarray)->list:
+def get_dynamics_average(arr:list)->list:
     return [np.nanmean([subarr[i] for subarr in arr if len(subarr) > i]) for i in range(max(map(len, arr)))]
 
 
-def plot_average(avg:list, n=20):
-    plt.plot(avg)
-    plt.title(f"100 different dynamics average for 2D Square Network ({n=})")
-    plt.xlabel("Iteration")
-    plt.ylabel("<E(i)>")
+def get_plot(tab:list, title:str, x:str, y:str, xticks=False):
+    if xticks:
+        plt.plot(xticks, tab, marker='o', linestyle='-')
+        plt.xticks(xticks)
+    else:
+        plt.plot(tab, marker='o', linestyle='-')
+    plt.title(title)
+    plt.xlabel(x)
+    plt.ylabel(y)
     plt.show()

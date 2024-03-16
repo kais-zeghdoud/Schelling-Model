@@ -6,20 +6,21 @@ import numpy as np
 
 choice = 0
 menu = "-----------MAIN MENU-----------\n\
-        1: Study of a 2D Square Network\n\
-        2: Study of any network\n\
-        3: Quit the application\n"
+    1: Study of a 2D Square Network\n\
+    2: Study of any network\n\
+    3: Quit the application\n"
 
 menu1 = "-----------2D Square Network-----------\n\
-        1: Plot single dynamic E(i) for n=20 and q=51%\n\
-        2: Plot for 100 dynamics <E>(i) for 100 different dynamics (n=20 and q=51%)\n\
-        3: Plot <E∞>(n) with n ∈ [10,100]\n\
-        4: [Move within 8 of nearby neighbors] Plot single dynamic E(i) for n=20 and q=51%\ \n\
-        5: [Move within 8 of nearby neighbors] Plot for 100 dynamics <E>(i) for 100 different dynamics (n=20 and q=51%)\n\
-        6: [Move within 8 of nearby neighbors] Plot <E∞>(n) with n ∈ [10,100]\n\
-        7: [Move within 24 of nearby neighbors] Plot single dynamic E(i) for n=20 and q=51%\ \n\
-        8: [Move within 24 of nearby neighbors] Plot for 100 dynamics <E>(i) for 100 different dynamics (n=20 and q=51%)\n\
-        9: [Move within 24 of nearby neighbors] Plot <E∞>(n) with n ∈ [10,100]\n"
+    1: Plot single dynamic E(i) for n=20 and q=51%\n\
+    2: Plot for 100 dynamics <E>(i) for 100 different dynamics (n=20 and q=51%)\n\
+    3: Plot <E∞>(n) with n ∈ [10,100]\n\n\
+    4: [Move within 8 of nearby neighbors] Plot single dynamic E(i) for n=20 and q=51% \n\
+    5: [Move within 8 of nearby neighbors] Plot for 100 dynamics <E>(i) for 100 different dynamics (n=20 and q=51%)\n\
+    6: [Move within 8 of nearby neighbors] Plot <E∞>(n) with n ∈ [10,100]\n\n\
+    7: [Move within 24 of nearby neighbors] Plot single dynamic E(i) for n=20 and q=51% \n\
+    8: [Move within 24 of nearby neighbors] Plot for 100 dynamics <E>(i) for 100 different dynamics (n=20 and q=51%)\n\
+    9: [Move within 24 of nearby neighbors] Plot <E∞>(n) with n ∈ [10,100]\n\n\
+    10: Go back to main menu\n"
 
 menu2 = "-----------Any Network-----------"
 
@@ -30,7 +31,7 @@ while choice != 3:
     match choice:
        
         case 1:
-            choice1 = get_choice(menu1, 9, True)
+            choice1 = get_choice(menu1, 10, True)
             match choice1:
                 case 1:
                     s = Square(20)
@@ -44,11 +45,18 @@ while choice != 3:
                         s = Square(20)
                         s.free_move()
                         dynamics.append(s.energy)
-                    average = get_dynamics_average(np.array(dynamics))
-                    plot_average(average)
+                        print(f"Dynamic {i} done: {s.energy=}")
+                    average = get_dynamics_average(dynamics)
+                    get_plot(average, "100 different dynamics average for 2D Square Network (n=20, q=51%)", "Iteration", "<E(i)>")
 
                 case 3:
-                    pass
+                    energies = []
+                    for n in range(10, 101): # n ∈ [10,100]
+                        s = Square(n)
+                        s.free_move()
+                        energies.append(s.energy[-1]) # getting the E∞ value after convergence of the algorithm
+                        print(f"Square with size {n} done: {s.energy[-1]=}")
+                    get_plot(energies, "E∞(n) value after algorithm convergence for Squares with n ∈ [10,100]", "Square Size n", "E∞", [n for n in range(10,101)])
 
                 case 4:
                     s = Square(20)
@@ -63,10 +71,16 @@ while choice != 3:
                         s.restricting_move()  # SPECIFY 8 NEIGHBORS
                         dynamics.append(s.energy)
                     average = get_dynamics_average(np.array(dynamics))
-                    plot_average(average)
+                    get_plot(average)
                 
                 case 6:
-                    pass
+                    energies = []
+                    for n in range(10, 101): # n ∈ [10,100]
+                        s = Square(n)
+                        s.restricting_move() # SPECIFY 8 NEIGHBORS
+                        energies.append(s.energy[-1]) # getting the E∞ value after convergence of the algorithm
+                        print(f"Square with size {n} done: {s.energy[-1]=}")
+                    get_plot(energies, "E∞(n) value after algorithm convergence for Squares with n ∈ [10,100]", "Square Size n", "E∞", [n for n in range(10,101)])
 
                 case 7:
                     s = Square(20)
@@ -81,10 +95,16 @@ while choice != 3:
                         s.restricting_move() # SPECIFY 24 NEIGHBORS
                         dynamics.append(s.energy)
                     average = get_dynamics_average(np.array(dynamics))
-                    plot_average(average)
+                    get_plot(average)
                 
                 case 9:
-                    pass
+                    energies = []
+                    for n in range(10, 101): # n ∈ [10,100]
+                        s = Square(n)
+                        s.restricting_move() # SPECIFY 24 NEIGHBORS
+                        energies.append(s.energy[-1]) # getting the E∞ value after convergence of the algorithm
+                        print(f"Square with size {n} done: {s.energy[-1]=}")
+                    get_plot(energies, "E∞(n) value after algorithm convergence for Squares with n ∈ [10,100]", "Square Size n", "E∞", [n for n in range(10,101)])
 
         case 2:
             choice2 = get_choice(menu2, 5, True)
