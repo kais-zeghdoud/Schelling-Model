@@ -48,30 +48,6 @@ class Square:
         middle = pd.DataFrame([(left[i], *self.df.iloc[i].tolist(), right[i]) for i in range(self.size)])
         self.extended_df = pd.DataFrame([high, *middle.values, low])
 
-    def update_df(self):
-        '''high = pd.Series(self.extended_df.iloc[0, 1:-1])
-        low = pd.Series(self.extended_df.iloc[-1, 1:-1])
-        left = pd.Series(self.extended_df.iloc[1:-1, 0])
-        right = pd.Series(self.extended_df.iloc[1:-1, -1])
-        middle = pd.DataFrame([(right[i], *self.extended_df.iloc[i+1:-2] ,left[i]) for i in range(1, self.size -1)])
-        self.df = pd.DataFrame([low, *middle.values ,high])'''
-        for i in range(len(self.extended_df)):
-            for j in range(len(self.extended_df)):
-                if i==0 and j>0 and j<len(self.extended_df)-1:
-                    self.df.iloc[self.size-1,j-1] = self.extended_df.iloc[i,j]
-                elif i==len(self.extended_df)-1 and j>0 and j<len(self.extended_df)-1:
-                    self.df.iloc[0,j-1] = self.extended_df.iloc[i,j]
-                
-                elif j==0 and i>1 and i<len(self.extended_df)-2:
-                    self.df.iloc[i-1, self.size-1] = self.extended_df.iloc[i,j]
-                elif j == len(self.extended_df)-1 and i>1 and i<len(self.extended_df)-2:
-                    self.df.iloc[i-1,0] = self.extended_df.iloc[i,j]
-
-                elif i>1 and i<len(self.extended_df)-2 and j>1 and j<len(self.extended_df)-2:
-                    self.df.iloc[i-1, j-1] = self.extended_df.iloc[i,j]
-                
-
-
 
     def update_satisfaction_df(self):
         mat = []
@@ -81,6 +57,7 @@ class Square:
                 row.append(self.get_agent_satisfaction(i, j))
             mat.append(row)
         self.satisfaction_df = pd.DataFrame(mat)
+
 
     def get_agent_satisfaction(self, i, j):
         agents = 0  # neighbors that are not empty cases
@@ -131,7 +108,7 @@ class Square:
     def restricting_move(self, nbr_neighbors):
         print("Restricting move")
         # Parcourir tous les agents de la matrice si il y a des agents insatisfaits
-        while not self.is_square_satisfied() or self.simulation != 100:
+        while not self.is_square_satisfied() and self.simulation != 30:
             for i in range(self.size):
                 for j in range(self.size):
                     if self.satisfaction_df.iloc[i, j] == -1:
@@ -156,8 +133,7 @@ class Square:
                             self.df.iloc[i, j] = 0  # déplacement de la case vide à l'emplacement de l'agent insatisfait
                             self.update_extended_df() # Mise à jour de la grille
                             self.update_satisfaction_df() # Mise à jour de la satisfaction des agents sur la nouvelle configuration
-                        # else:
-                        #     print(f"{(i,j)} pas de voisins vides")
+
 
             # Nouvelle itération
             self.simulation += 1

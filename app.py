@@ -23,7 +23,12 @@ menu1 = "-----------2D Square Network-----------\n\
     9: [Move within 24 of nearby neighbors] Plot <E∞>(n) with n ∈ [10,100]\n\n\
     10: Go back to main menu\n"
 
-menu2 = "-----------Any Network-----------"
+menu2 = "-----------Any Network-----------\n\
+    1: For n = 400 and q = 51%, plot for a single dynamic : E(i) with i iteration number, until the algorithm converges.\n\
+    2: For n = 400 and q = 51%, plot for 100 different dynamics : < E > (i) with <> being the average over the 100 dynamics.\n\
+    3: We define E∞ as the energy value after convergence of the algorithm, which depends a priori on the number n of vertices, which is why we can write E∞(n).\n\
+    Plot for q = 51%, < E∞ > (n) with n ∈ [[10,1000]].\n\
+    4: Study the network effects in a graph for Schelling's model\n"
 
 
 cls()
@@ -37,6 +42,7 @@ while choice != 3:
                 case 1:
                     s = Square(20)
                     s.free_move()
+                    print(s.df)
                     s.show_matrix()
                     s.plot_dynamic()
 
@@ -52,7 +58,7 @@ while choice != 3:
 
                 case 3:
                     energies = []
-                    for n in range(10, 101): # n ∈ [10,100]
+                    for n in range(33, 101): # n ∈ [10,100]
                         s = Square(n)
                         s.free_move()
                         energies.append(s.energy[-1]) # getting the E∞ value after convergence of the algorithm
@@ -67,14 +73,13 @@ while choice != 3:
                     
                 case 5:
                     dynamics = []
-                    for i in range(101):
+                    for i in range(11):
                         s = Square(20)
-                        thread = threading.Thread(target=s.restricting_move(8), args=8)  # 8 nearest neighbors
-                        thread.start()
-                        thread.join()
+                        s.restricting_move(8,)  # 8 nearest neighbors
                         dynamics.append(s.energy)
+                        print("dynamic ", i, " done")
                     average = get_dynamics_average(np.array(dynamics))
-                    get_plot(average)
+                    get_plot(average, "10 different dynamics average for 2D Square Network (n=20, q=51%, 8 nearest neighboors)", "Iteration", "<E(i)>")
                 
                 case 6:
                     energies = []
@@ -93,12 +98,12 @@ while choice != 3:
                     
                 case 8:
                     dynamics = []
-                    for i in range(101):
+                    for i in range(11):
                         s = Square(20)
                         s.restricting_move(24) # 24 nearest neighbors
                         dynamics.append(s.energy)
                     average = get_dynamics_average(np.array(dynamics))
-                    get_plot(average)
+                    get_plot(average,  "10 different dynamics average for 2D Square Network (n=20, q=51%, 24 nearest neighboors)", "Iteration", "<E(i)>")
                 
                 case 9:
                     energies = []

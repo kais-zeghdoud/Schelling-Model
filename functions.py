@@ -34,3 +34,5 @@ def calculate_execution_time(func, *args, **kwargs):
     end_time = time.time()
     execution_time = end_time - start_time
     print(f"Temps d'exécution de {func.__name__}: {execution_time} secondes")
+
+# e = [-471, -564, -666, -776, -990, -1086, -1201, -1405, -1571, -1707, -1967, -2248, -2516, -2917, -3024, -3264, -3172, -3985, -3997, -4310, -4417, -4664, -5241, -11695, -12698]
