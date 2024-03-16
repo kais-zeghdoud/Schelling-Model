@@ -41,7 +41,7 @@ while choice != 3:
 
                 case 2:
                     dynamics = []
-                    for i in range(100):
+                    for i in range(101):
                         s = Square(20)
                         s.free_move()
                         dynamics.append(s.energy)
@@ -66,7 +66,7 @@ while choice != 3:
                     
                 case 5:
                     dynamics = []
-                    for i in range(100):
+                    for i in range(101):
                         s = Square(20)
                         s.restricting_move(8)  # 8 nearest neighbors
                         dynamics.append(s.energy)
@@ -90,7 +90,7 @@ while choice != 3:
                     
                 case 8:
                     dynamics = []
-                    for i in range(100):
+                    for i in range(101):
                         s = Square(20)
                         s.restricting_move(24) # 24 nearest neighbors
                         dynamics.append(s.energy)

@@ -48,6 +48,31 @@ class Square:
         middle = pd.DataFrame([(left[i], *self.df.iloc[i].tolist(), right[i]) for i in range(self.size)])
         self.extended_df = pd.DataFrame([high, *middle.values, low])
 
+    def update_df(self):
+        '''high = pd.Series(self.extended_df.iloc[0, 1:-1])
+        low = pd.Series(self.extended_df.iloc[-1, 1:-1])
+        left = pd.Series(self.extended_df.iloc[1:-1, 0])
+        right = pd.Series(self.extended_df.iloc[1:-1, -1])
+        middle = pd.DataFrame([(right[i], *self.extended_df.iloc[i+1:-2] ,left[i]) for i in range(1, self.size -1)])
+        self.df = pd.DataFrame([low, *middle.values ,high])'''
+        for i in range(len(self.extended_df)):
+            for j in range(len(self.extended_df)):
+                if i==0 and j>0 and j<len(self.extended_df)-1:
+                    self.df.iloc[self.size-1,j-1] = self.extended_df.iloc[i,j]
+                elif i==len(self.extended_df)-1 and j>0 and j<len(self.extended_df)-1:
+                    self.df.iloc[0,j-1] = self.extended_df.iloc[i,j]
+                
+                elif j==0 and i>1 and i<len(self.extended_df)-2:
+                    self.df.iloc[i-1, self.size-1] = self.extended_df.iloc[i,j]
+                elif j == len(self.extended_df)-1 and i>1 and i<len(self.extended_df)-2:
+                    self.df.iloc[i-1,0] = self.extended_df.iloc[i,j]
+
+                elif i>1 and i<len(self.extended_df)-2 and j>1 and j<len(self.extended_df)-2:
+                    self.df.iloc[i-1, j-1] = self.extended_df.iloc[i,j]
+                
+
+
+
     def update_satisfaction_df(self):
         mat = []
         for i in range(self.size):
@@ -109,7 +134,6 @@ class Square:
         while not self.is_square_satisfied():
             for i in range(self.size):
                 for j in range(self.size):
-                    # print("1 = " + str(i) + "; j = " + str(j))
                     if self.satisfaction_df.iloc[i, j] == -1:
                         # Récupération des indices des 8 voisins les plus proches
                         if nbr_neighbors == 8:
@@ -119,30 +143,23 @@ class Square:
                             neighbors_indices = [(i + x, j + y) for x in range(-2, 3) for y in range(-2, 3) if
                                                  (x != 0 or y != 0)]
 
-                        # Mélange des indices pour choisir aléatoirement la destination potentielle  de l'agent insatisfait.
-                        np.random.shuffle(neighbors_indices)
+                        zero_idx = [(i,j) for (i,j) in neighbors_indices if self.extended_df.iloc[i,j]==0]
 
-                        # Recherche d'un voisin non occupé
-                        found = False
-                        for x, y in neighbors_indices:
-                            if 0 <= x < self.size and 0 <= y < self.size and self.df.iloc[x, y] == 0:
-                                found = True
-                                # Déplacer l'agent insatisfait
-                                self.df.iloc[x, y] = self.df.iloc[i, j]
-                                self.df.iloc[i, j] = 0
-                                break
-
-                        if not found:
-                            # Aucun voisin non occupé trouvé, cet agent reste à sa place
-                            self.satisfaction_df.iloc[i, j] = 1  # L'agent est maintenant satisfait
-
-                        # Mise à jour
-                        self.update_extended_df()
-                        self.update_satisfaction_df()
+                        if len(zero_idx) !=0:
+                            x, y = zero_idx[np.random.choice(len(zero_idx))] # selection aléatoire d'une case vide dans les 8 ou 24 voisins
+                            self.extended_df.iloc[x, y] = self.extended_df.iloc[i, j]  # déplacement de l'agent insatisfait dans une case vide
+                            self.extended_df.iloc[i, j] = 0  # déplacement de la case vide à l'emplacement de l'agent insatisfait
+                            self.update_df() # Mise à jour de la grille
+                            self.update_satisfaction_df() # Mise à jour de la satisfaction des agents sur la nouvelle configuration
 
             # Nouvelle itération
             self.simulation += 1
             self.energy.append(self.compute_energy())
+            print(f"{self.simulation = } {self.energy[-1]}")
+            if self.simulation % 10 == 0:
+                print(self.satisfaction_df)
+                self.show_matrix()
+                
 
     def compute_energy(self) -> int:
         energy = 0
@@ -182,9 +199,8 @@ class Square:
         plt.show()
 
 
-s = Square(20)
-# s.free_move()
-functions.calculate_execution_time(s.restricting_move(8))
+s = Square(5)
+s.restricting_move(8)
 s.show_matrix()
 print(f"{s.simulation =} {s.is_square_satisfied() =} {s.energy =}")
 s.plot_dynamic()
