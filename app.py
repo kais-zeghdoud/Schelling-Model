@@ -1,6 +1,8 @@
 from schelling import Square
 from functions import *
 import matplotlib.pyplot as plt
+import numpy as np
+
 
 choice = 0
 menu = "-----------MAIN MENU-----------\n\
@@ -13,8 +15,12 @@ menu1 = "-----------2D Square Network-----------\n\
         1: Plot single dynamic E(i) for n=20 and q=51%\n\
         2: Plot for 100 dynamics <E>(i) for 100 different dynamics (n=20 and q=51%)\n\
         3: Plot <E∞>(n) with n ∈ [10,100]\n\
-        4:\n\
-        5:\n"
+        4: [Move within 8 of nearby neighbors] Plot single dynamic E(i) for n=20 and q=51%\ \n\
+        5: [Move within 8 of nearby neighbors] Plot for 100 dynamics <E>(i) for 100 different dynamics (n=20 and q=51%)\n\
+        6: [Move within 8 of nearby neighbors] Plot <E∞>(n) with n ∈ [10,100]\n\
+        7: [Move within 24 of nearby neighbors] Plot single dynamic E(i) for n=20 and q=51%\ \n\
+        8: [Move within 24 of nearby neighbors] Plot for 100 dynamics <E>(i) for 100 different dynamics (n=20 and q=51%)\n\
+        9: [Move within 24 of nearby neighbors] Plot <E∞>(n) with n ∈ [10,100]\n"
 
 menu2 = "-----------Any Network-----------"
 
@@ -43,13 +49,25 @@ while choice != 4:
                         s = Square(20)
                         s.free_move()
                         dynamics.append(s.energy)
-                    average = get_dynamics_average(dynamics)
+                    average = get_dynamics_average(np.array(dynamics))
                     plot_average(average)
 
                 case 3:
                     pass
 
                 case 4:
+                    pass
+                    
+                case 5:
+                    pass
+                
+                case 6:
+                    pass
+
+                case 7:
+                    pass
+                    
+                case 8:
                     pass
 
         case 3:
