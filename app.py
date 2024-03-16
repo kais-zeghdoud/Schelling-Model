@@ -58,7 +58,7 @@ while choice != 3:
 
                 case 3:
                     energies = []
-                    for n in range(33, 101): # n ∈ [10,100]
+                    for n in range(10, 101): # n ∈ [10,100]
                         s = Square(n)
                         s.free_move()
                         energies.append(s.energy[-1]) # getting the E∞ value after convergence of the algorithm
