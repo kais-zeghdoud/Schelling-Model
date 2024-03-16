@@ -6,10 +6,9 @@ import numpy as np
 
 choice = 0
 menu = "-----------MAIN MENU-----------\n\
-        1: Set default threshold\n\
-        2: Study of a 2D Square Network\n\
-        3: Study of any network\n\
-        4: Quit the application\n"
+        1: Study of a 2D Square Network\n\
+        2: Study of any network\n\
+        3: Quit the application\n"
 
 menu1 = "-----------2D Square Network-----------\n\
         1: Plot single dynamic E(i) for n=20 and q=51%\n\
@@ -26,16 +25,12 @@ menu2 = "-----------Any Network-----------"
 
 
 cls()
-while choice != 4:
-    choice = get_choice(menu, 4)
+while choice != 3:
+    choice = get_choice(menu, 3)
     match choice:
-        case 1:
-            threshold = 0
-            while threshold<=0 or threshold>=1:
-                threshold = float(input("Set default threshold: "))
        
-        case 2:
-            choice1 = get_choice(menu1, 4, True)
+        case 1:
+            choice1 = get_choice(menu1, 9, True)
             match choice1:
                 case 1:
                     s = Square(20)
@@ -56,21 +51,42 @@ while choice != 4:
                     pass
 
                 case 4:
-                    pass
+                    s = Square(20)
+                    s.restricting_move() # SPECIFY 8 NEIGHBORS
+                    s.show_matrix()
+                    s.plot_dynamic()
                     
                 case 5:
-                    pass
+                    dynamics = []
+                    for i in range(100):
+                        s = Square(20)
+                        s.restricting_move()  # SPECIFY 8 NEIGHBORS
+                        dynamics.append(s.energy)
+                    average = get_dynamics_average(np.array(dynamics))
+                    plot_average(average)
                 
                 case 6:
                     pass
 
                 case 7:
-                    pass
+                    s = Square(20)
+                    s.restricting_move() # SPECIFY 24 NEIGHBORS
+                    s.show_matrix()
+                    s.plot_dynamic()
                     
                 case 8:
+                    dynamics = []
+                    for i in range(100):
+                        s = Square(20)
+                        s.restricting_move() # SPECIFY 24 NEIGHBORS
+                        dynamics.append(s.energy)
+                    average = get_dynamics_average(np.array(dynamics))
+                    plot_average(average)
+                
+                case 9:
                     pass
 
-        case 3:
+        case 2:
             choice2 = get_choice(menu2, 5, True)
             match choice2:
                 case 1:
@@ -84,5 +100,5 @@ while choice != 4:
                 case 5:
                     pass
 
-        case 4:
+        case 3:
             print("Closing Schelling Model Application")

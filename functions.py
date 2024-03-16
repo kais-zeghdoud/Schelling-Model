@@ -16,7 +16,7 @@ def get_dynamics_average(arr:np.ndarray)->list:
     return [np.nanmean([subarr[i] for subarr in arr if len(subarr) > i]) for i in range(max(map(len, arr)))]
 
 
-def plot_average(avg:list, n:int):
+def plot_average(avg:list, n=20):
     plt.plot(avg)
     plt.title(f"100 different dynamics average for 2D Square Network ({n=})")
     plt.xlabel("Iteration")
