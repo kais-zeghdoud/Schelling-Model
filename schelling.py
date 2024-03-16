@@ -85,6 +85,7 @@ class Square:
         return not (self.satisfaction_df == -1).any().any()
 
     def free_move(self):
+        print("Free move")
         while not self.is_square_satisfied():
             for i in range(self.size):
                 for j in range(self.size):
@@ -96,6 +97,7 @@ class Square:
                         # maj des DF
                         self.update_extended_df()
                         self.update_satisfaction_df()
+                print(s.satisfaction_df)
 
             # new iteration done
             self.simulation += 1
@@ -133,6 +135,7 @@ class Square:
                         # Mise à jour
                         self.update_extended_df()
                         self.update_satisfaction_df()
+                print(s.satisfaction_df)
 
             # Nouvelle itération
             self.simulation += 1
@@ -176,9 +179,9 @@ class Square:
         plt.show()
 
 
-s = Square(20)
-# s.free_move()
-s.restricting_move()
+s = Square(5)
+s.free_move()
+#s.restricting_move()
 s.show_matrix()
 print(f"{s.simulation =} {s.is_square_satisfied() =} {s.energy =}")
 s.plot_dynamic()
