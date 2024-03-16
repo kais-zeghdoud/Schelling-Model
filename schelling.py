@@ -188,3 +188,57 @@ functions.calculate_execution_time(s.restricting_move(8))
 s.show_matrix()
 print(f"{s.simulation =} {s.is_square_satisfied() =} {s.energy =}")
 s.plot_dynamic()
+
+import random
+
+class Matrix:
+    def __init__(self, nbr_vertices):
+        self.nbr_vertices = nbr_vertices
+        self.matrix = self.random_graph()
+
+    def random_graph(self):
+        matrix = [[0] * self.nbr_vertices for _ in range(self.nbr_vertices)]
+
+        for i in range(1, self.nbr_vertices):
+            matrix[i-1][i] = matrix[i][i-1] = 1
+
+        edges_added = 0
+        max_edges = 3 * self.nbr_vertices
+        while edges_added < max_edges:
+            u, v = random.sample(range(self.nbr_vertices), 2)
+
+            if u != v and matrix[u][v] == 0:
+                matrix[u][v] = matrix[v][u] = 1
+                edges_added += 1
+
+        return matrix
+
+    def initialize_agents(self):
+        agents = [1, -1]
+        random.shuffle(agents)
+        agent_placement = [0] * self.nbr_vertices
+
+        for i in range(len(self.matrix)):
+            if agents:
+                agent_placement[i] = agents.pop()
+        return agent_placement
+
+    def calculate_energy(self, agent_placement):
+        energy = 0
+        for i in range(len(self.matrix)):
+            for j in range(len(self.matrix[i])):
+                if self.matrix[i][j] == 1:
+                    energy -= agent_placement[i] * agent_placement[j]
+        return energy
+
+# main
+random_graph = Matrix(400)
+agent_placement = random_graph.initialize_agents()
+energy = random_graph.calculate_energy(agent_placement)
+
+print("Random Graph:")
+for row in random_graph.matrix:
+    print(row)
+print("\nAgent Placement:", agent_placement)
+print("Energy:", energy)
+
