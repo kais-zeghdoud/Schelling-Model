@@ -192,7 +192,7 @@ class Square:
 
 s = Square(20)
 # s.free_move()
-calculate_execution_time(s.restricting_move())
+calculate_execution_time(s.restricting_move(8))
 s.show_matrix()
 print(f"{s.simulation =} {s.is_square_satisfied() =} {s.energy =}")
 s.plot_dynamic()
