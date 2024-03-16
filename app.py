@@ -2,6 +2,7 @@ from schelling import Square
 from functions import *
 import matplotlib.pyplot as plt
 import numpy as np
+import threading
 
 
 choice = 0
@@ -68,7 +69,9 @@ while choice != 3:
                     dynamics = []
                     for i in range(101):
                         s = Square(20)
-                        s.restricting_move(8)  # 8 nearest neighbors
+                        thread = threading.Thread(target=s.restricting_move(8), args=8)  # 8 nearest neighbors
+                        thread.start()
+                        thread.join()
                         dynamics.append(s.energy)
                     average = get_dynamics_average(np.array(dynamics))
                     get_plot(average)

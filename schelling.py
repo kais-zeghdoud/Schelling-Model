@@ -131,34 +131,41 @@ class Square:
     def restricting_move(self, nbr_neighbors):
         print("Restricting move")
         # Parcourir tous les agents de la matrice si il y a des agents insatisfaits
-        while not self.is_square_satisfied():
+        while not self.is_square_satisfied() or self.simulation != 100:
             for i in range(self.size):
                 for j in range(self.size):
                     if self.satisfaction_df.iloc[i, j] == -1:
                         # Récupération des indices des 8 voisins les plus proches
                         if nbr_neighbors == 8:
-                            neighbors_indices =[(i + x, j + y) for x in range(-1, 2) for y in range(-1, 2) if
+                            neighbors_indices =[[i + x, j + y] for x in range(-1, 2) for y in range(-1, 2) if
                                                 (x != 0 or y != 0)]
                         elif nbr_neighbors == 24:
                             neighbors_indices = [(i + x, j + y) for x in range(-2, 3) for y in range(-2, 3) if
                                                  (x != 0 or y != 0)]
+                            
+                        for id in neighbors_indices:
+                            if id[0]<0 or id[0]>self.size-1:
+                                id[0] = id[0]% self.size -1
+                            if id[1]<0 or id[1]>self.size-1:
+                                id[1] = id[1]% self.size -1
 
-                        zero_idx = [(i,j) for (i,j) in neighbors_indices if self.extended_df.iloc[i,j]==0]
-
+                        zero_idx = [(i,j) for (i,j) in neighbors_indices if self.df.iloc[i,j]==0]
                         if len(zero_idx) !=0:
                             x, y = zero_idx[np.random.choice(len(zero_idx))] # selection aléatoire d'une case vide dans les 8 ou 24 voisins
-                            self.extended_df.iloc[x, y] = self.extended_df.iloc[i, j]  # déplacement de l'agent insatisfait dans une case vide
-                            self.extended_df.iloc[i, j] = 0  # déplacement de la case vide à l'emplacement de l'agent insatisfait
-                            self.update_df() # Mise à jour de la grille
+                            self.df.iloc[x, y] = self.df.iloc[i, j]  # déplacement de l'agent insatisfait dans une case vide
+                            self.df.iloc[i, j] = 0  # déplacement de la case vide à l'emplacement de l'agent insatisfait
+                            self.update_extended_df() # Mise à jour de la grille
                             self.update_satisfaction_df() # Mise à jour de la satisfaction des agents sur la nouvelle configuration
+                        # else:
+                        #     print(f"{(i,j)} pas de voisins vides")
 
             # Nouvelle itération
             self.simulation += 1
             self.energy.append(self.compute_energy())
-            print(f"{self.simulation = } {self.energy[-1]}")
-            if self.simulation % 10 == 0:
-                print(self.satisfaction_df)
+            print(f"simulation {self.simulation}")
+            if self.simulation % 100 == 0:
                 self.show_matrix()
+                self.plot_dynamic()
                 
 
     def compute_energy(self) -> int:
@@ -198,9 +205,3 @@ class Square:
         plt.ylabel("E(i)")
         plt.show()
 
-
-s = Square(5)
-s.restricting_move(8)
-s.show_matrix()
-print(f"{s.simulation =} {s.is_square_satisfied() =} {s.energy =}")
-s.plot_dynamic()
